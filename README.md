@@ -16,8 +16,7 @@ Each client can also serve a web UI and each tracker a live dashboard; see [Web 
 9. [Files on disk](#files-on-disk)
 10. [Assumptions](#assumptions)
 11. [Features](#features)
-12. [Limitations](#limitations)
-13. [Testing](#testing)
+12. [Testing](#testing)
 
 ---
 
@@ -450,16 +449,6 @@ Snapshots also use `add_member`, `file_meta` and `seeder`.
   - timeouts on every network wait.
 - **Protocol:** a binary header with type, status and length, so partial reads and writes and malformed input are handled.
 - **Web interfaces:** an optional browser UI for each client, and an optional live dashboard for each tracker.
-
-## Limitations
-- **No encryption.** Passwords travel in plain text once per `login`, and the sync secret in plain text; there is no TLS.
-- **Some partition conflicts aren't resolved.** Only creation clashes (user, group, file name) have a deterministic winner. Other concurrent changes made on both trackers while they're cut off are merged as they arrive. For example, the order of group members can differ between the trackers, which can change who becomes the next owner.
-- **A rare snapshot race.** If a tracker loses its state file while cut off, it later receives a full snapshot that is merged in, and a deletion made in that short window can be undone.
-- **No `fsync` per change.** Tracker state survives a process crash, but the last changes before a power loss may be lost. The other tracker then sends a snapshot.
-- **`poll()` scans every connection on each wake-up.** That is fine for hundreds of connections; `epoll` (Linux) or `kqueue` (macOS) would scale further.
-- **The client's peer server uses one thread per connected downloader.**
-- **SHA-1 is not collision resistant.** It is used for file pieces because the specification requires it.
-- **The `sendfile()` path is untested on Linux.** It was exercised on macOS; Linux uses the same structure through its own `sendfile` call.
 
 ---
 
