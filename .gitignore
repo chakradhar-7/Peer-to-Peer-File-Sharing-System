@@ -1,0 +1,14 @@
+# compiled programs
+tracker/tracker
+client/client
+tests/p2pmsg
+*.o
+
+# files the programs write while running
+*.state
+*.state.tmp
+*.part
+*.part.tmp
+cl.log
+
+.DS_Store
